@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use app\lib\exception\EmailException;
+use App\Exceptions\EmailException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
@@ -10,7 +10,8 @@ class MailRequest extends FormRequest
 {
     public function failedValidation(Validator $validator)
     {
-        throw new EmailException($validator->errors()->messages());
+        //echo $validator->errors()->first();
+        throw new EmailException($validator->errors()->first());
 
     }
 

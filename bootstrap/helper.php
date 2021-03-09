@@ -12,5 +12,6 @@
 
     function res_json($code,$msg='',$data=[])
     {
-        return json_encode(compact('code','msg','data'));
+        return response()->json(compact('code','msg','data'));
+        //return json_encode(compact('code','msg','data'));
     }
