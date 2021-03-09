@@ -10,7 +10,7 @@ class MailRequest extends FormRequest
 {
     public function failedValidation(Validator $validator)
     {
-        throw new EmailException($validator->errors()->first());
+        throw new EmailException($validator->errors()->messages());
 
     }
 
