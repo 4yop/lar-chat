@@ -18,10 +18,10 @@ class RegisterCode extends Mailable
      *
      * @return void
      */
-    protected $to_email;
+    protected string $to_email;
 
-    protected $key;
-    public function __construct($to_email)
+    protected string $key;
+    public function __construct(string $to_email)
     {
         $this->to_email = $to_email;
         $this->key = "register_email:{$this->to_email}";
@@ -60,7 +60,7 @@ class RegisterCode extends Mailable
 
 
     //
-    public function setExpireTime($code,int $seconds = 300)
+    public function setExpireTime(string $code,int $seconds = 10)
     {
         Cache::put($this->key, $code, $seconds);
     }
@@ -69,7 +69,7 @@ class RegisterCode extends Mailable
 
     /**
      * Build the message.
-     *
+     *要发送的内容
      * @return $this
      */
     public function build()
