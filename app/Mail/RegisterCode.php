@@ -25,9 +25,9 @@ class RegisterCode extends Mailable
     {
         $this->to_email = $to_email;
         $this->key = "register_email:{$this->to_email}";
-        if (!$this->isCanSend()) {
-            throw new EmailException('该邮箱请5分钟后再发');
-        }
+//        if (!$this->isCanSend()) {
+//            throw new EmailException('该邮箱请5分钟后再发');
+//        }
     }
 
     //生成 4位数字的注册码

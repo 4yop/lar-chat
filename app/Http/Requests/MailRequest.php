@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 
+use App\Rules\CheckEmailCanSend;
+use Illuminate\Validation\Rule;
+
 class MailRequest extends ApiRequest
 {
 
@@ -24,8 +27,13 @@ class MailRequest extends ApiRequest
      */
     public function rules()
     {
+
         return [
-            'email' => 'required|email',
+            'email' => [
+                'required',
+                'email',
+                new CheckEmailCanSend(),
+                Rule::unique('users','email')],
         ];
     }
 }
