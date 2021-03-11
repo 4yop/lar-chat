@@ -2,18 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Exceptions\EmailException;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use Illuminate\Contracts\Validation\Validator;
-class MailRequest extends FormRequest
+
+class MailRequest extends ApiRequest
 {
-    public function failedValidation(Validator $validator)
-    {
 
-        throw new EmailException($validator->errors()->first());
-
-    }
 
     /**
      * Determine if the user is authorized to make this request.
