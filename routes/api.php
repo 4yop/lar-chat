@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\MailController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,4 +20,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/test',[\App\Http\Controllers\Test::class,'sendEmail']);
 
-Route::post('/register/code',[\App\Http\Controllers\MailController::class,'sendRegisterCode']);
+
+
+
+Route::prefix('v1')->name('api.v1.')->group(function () {
+    // 短信验证码
+    Route::post('/register/code',[MailController::class,'sendRegisterCode'])->name('register.code');
+
+
+});
