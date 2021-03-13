@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckRegisterCode;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends ApiRequest
@@ -24,10 +25,13 @@ class UserRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email' => 'require',
-            'password' => 'require',
-            'repassword' => 'require',
-            'code' => 'require',
+            'email' => 'required|email',
+            'password' => 'required|between:6,18',
+            'repassword' => 'required|same:password',
+            'code' => [
+                'required',
+                new CheckRegisterCode( $this->input('email') )
+            ],
         ];
     }
 

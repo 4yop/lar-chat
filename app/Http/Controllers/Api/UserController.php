@@ -11,6 +11,7 @@ class UserController extends Controller
 
     public function register(UserRequest $request)
     {
-
+        $data = $request->input();
+        return success_json('ok',$data);
     }
 }

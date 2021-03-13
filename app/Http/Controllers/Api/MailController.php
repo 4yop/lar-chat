@@ -14,10 +14,6 @@ class MailController extends Controller
     public function sendRegisterCode(MailRequest $request)
     {
         $to_mail = $request->email;
-        if ( User::where('email',$to_mail)->first())
-        {
-            return  error_json('该邮箱已注册');
-        }
         try {
             Mail::to($to_mail)->later(time() + 1, new RegisterCode($to_mail));
         }catch (EmailException $e){

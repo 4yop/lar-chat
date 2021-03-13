@@ -5,16 +5,20 @@ namespace App\Rules;
 use App\Mail\RegisterCode;
 use Illuminate\Contracts\Validation\Rule;
 
-class CheckEmailCanSend implements Rule
+class CheckRegisterCode implements Rule
 {
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct()
+    protected $email;
+    protected $code;
+    protected $val;
+    public function __construct($email)
     {
         //
+        $this->email = $email;
     }
 
     /**
@@ -26,7 +30,9 @@ class CheckEmailCanSend implements Rule
      */
     public function passes($attribute, $value)
     {
-        return (new RegisterCode($value))->isCanSend();
+        $this->code = (new RegisterCode($this->email))->getCodeByEmail();
+        $this->val = $value;
+        return $value == $this->code;
     }
 
     /**
@@ -36,6 +42,7 @@ class CheckEmailCanSend implements Rule
      */
     public function message()
     {
-        return '该邮箱请30class="btn_global btn_view_order"0秒后再发!';
+        //"{$this->code} != {$this->val}"
+        return '邮箱验证码有误.';
     }
 }

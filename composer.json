@@ -16,6 +16,7 @@
         "laravel/sanctum": "^2.9",
         "laravel/tinker": "^2.5",
         "overtrue/laravel-lang": "~3.0",
+        "tymon/jwt-auth": "^1.0",
         "wildbit/swiftmailer-postmark": "^3.3"
     },
     "require-dev": {

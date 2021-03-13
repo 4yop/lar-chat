@@ -18,9 +18,9 @@ class RegisterCode extends Mailable
      *
      * @return void
      */
-    protected string $to_email;
+    protected $to_email;
 
-    protected string $key;
+    protected $key;
     public function __construct(string $to_email)
     {
         $this->to_email = $to_email;
@@ -60,7 +60,7 @@ class RegisterCode extends Mailable
 
 
     //
-    public function setExpireTime(string $code,int $seconds = 10)
+    public function setExpireTime(string $code,int $seconds = 300)
     {
         Cache::put($this->key, $code, $seconds);
     }

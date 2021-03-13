@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MailController;
+use App\Http\Controllers\Api\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,9 +24,14 @@ Route::get('/test',[\App\Http\Controllers\Test::class,'sendEmail']);
 
 
 
-Route::prefix('v1')->name('api.v1.')->group(function () {
-    // 短信验证码
-    Route::post('/register/code',[MailController::class,'sendRegisterCode'])->name('register.code');
+Route::prefix('v1')
+    ->name('api.v1.')
+    ->namespace('Api')
+    ->middleware('throttle:60,1')
+    ->group(function () {
+        // 邮箱验证码发送
+        Route::post('/register/code',[MailController::class,'sendRegisterCode'])->name('register.code');
 
 
-});
+        Route::post('/user/register',[UserController::class,'register'])->name('user.register');
+    });
