@@ -38,7 +38,7 @@ class RegisterCode extends Mailable
         {
             $code .= mt_rand(0,9);
         }
-        $this->setExpireTime($code);
+        $this->setCodeToCache($code);
         return $code;
     }
 
@@ -51,7 +51,7 @@ class RegisterCode extends Mailable
     //是否能发
     public function isCanSend()
     {
-        if ( $this->getCodeByEmail() )
+        if ( Cache::get("lock:{$this->key}") )
         {
             return false;
         }
@@ -59,10 +59,28 @@ class RegisterCode extends Mailable
     }
 
 
-    //
-    public function setExpireTime(string $code,int $seconds = 300)
+
+    //验证成功后删除
+    public function removeCode()
+    {
+        Cache::forget($this->key);
+        Cache::forget("lock:{$this->key}");
+    }
+
+    public function checkCode(string $code)
+    {
+        if ($this->getCodeByEmail() == $code) {
+            $this->removeCode();
+            return true;
+        }
+        return false;
+    }
+
+    //添加缓存
+    public function setCodeToCache(string $code,int $rate = 20,int $seconds = 300)
     {
         Cache::put($this->key, $code, $seconds);
+        Cache::put("lock:{$this->key}",1,$rate);
     }
 
 

@@ -36,6 +36,6 @@ class CheckEmailCanSend implements Rule
      */
     public function message()
     {
-        return '该邮箱请30class="btn_global btn_view_order"0秒后再发!';
+        return '该邮箱请等20秒再发!';
     }
 }

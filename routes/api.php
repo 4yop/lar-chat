@@ -34,4 +34,7 @@ Route::prefix('v1')
 
 
         Route::post('/user/register',[UserController::class,'register'])->name('user.register');
+
+        Route::post('/user/login',[UserController::class,'login'])->name('user.login');
+
     });

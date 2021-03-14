@@ -30,9 +30,8 @@ class CheckRegisterCode implements Rule
      */
     public function passes($attribute, $value)
     {
-        $this->code = (new RegisterCode($this->email))->getCodeByEmail();
-        $this->val = $value;
-        return $value == $this->code;
+        return  (new RegisterCode($this->email))->checkCode($value);
+
     }
 
     /**
