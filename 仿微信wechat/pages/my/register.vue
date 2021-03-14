@@ -6,8 +6,8 @@
 		<!-- #ifndef MP-WEIXIN -->
 		<view class="status_bar"></view>
 		<!-- #endif -->
-			
-			
+
+
 		<view class="warp">
 			<form  class="login-form">
 				<view class="uni-form-item uni-column email-input">
@@ -26,14 +26,14 @@
 					<view class="uni-form-item uni-column">
 						<input class="uni-input input" name="input" placeholder="确认密码" />
 					</view>
-					
+
 					<view class="uni-form-item uni-column other">
 						 <navigator url="/pages/my/login" hover-class="navigator-hover">
 							<view type="default">立即登录</view>
 						</navigator>
-						 
+
 					</view>
-					
+
 					<view class="uni-btn-v">
 						<button class='submit-button' form-type="submit">提交</button>
 					</view>
@@ -43,15 +43,17 @@
 				</view>
 			</form>
 		</view>
-		    	
-		
-		
-		
+
+
+
+
 	</view>
 </template>
 
 <script>
 import validator from 'validator';
+import { http_request } from "../../utils/http_request";
+
 export default {
 	data() {
 		return {
@@ -72,7 +74,7 @@ export default {
 			setTimeout( ()=>{
 				that.inputEmailTips = [];
 			},100);
-			
+
 		},//end clearTips
 		changeEmail(email){
 			this.email = email;
@@ -80,14 +82,14 @@ export default {
 		},//end changeEmail
 		showTips(e){
 			let ext = [
-				
+
                 "sina.com",
                 "163.com",
                 "126.com",
                 "yahoo.com.cn",
                 "gmail.com",
                 "sohu.com",
-				"qq.com",	
+				"qq.com",
 			];
 			let val = e.target.value;
 			let start = val;
@@ -100,12 +102,12 @@ export default {
 				tips.push(email);
 			});
 			this.inputEmailTips = tips;
-			console.log(val);
+			// console.log(val);
 		},//end showTips
-		
+
 		sendEmail () {
-			let that = this;
-			if ( validator.isEmail(this.email) == false) 
+            let that = this;
+			if ( validator.isEmail(this.email) == false)
 			{
 				uni.showToast({
 				    title: '邮件格式不正确',
@@ -113,12 +115,59 @@ export default {
 				});
 				return;
 			}
-			
-			uni.showToast({
-			    title: '发送邮件成功',
-			});
-			this.isSendEmail = true;
-		},//end sendEmail
+            let params = {
+                url : 'register/code',
+                data : {
+                    email : that.email,
+                },
+                type : 'POST',
+                sCallback : function (res) {
+                    if (res.code != 1) {
+                        uni.showToast({
+                            title: res.msg ? res.msg : '发送失败',
+                            icon : 'none',
+                        });
+                        return;
+                    }
+                    uni.showToast({
+                        title: '发送邮件成功',
+                    });
+                    that.isSendEmail = true;
+                },
+            }
+            http_request(params);
+        },//end sendEmail
+
+        register () {
+		    let that = this;
+            let params = {
+                url : 'register/code',
+                data : {
+                    email : that.email,
+                    password : that.password,
+                    repassword : that.repassword,
+                    code : that.code,
+                },
+                type : 'POST',
+                sCallback : function (res) {
+                    if (res.code != 1) {
+                        uni.showToast({
+                            title: res.msg ? res.msg : 'error',
+                            icon : 'none',
+                        });
+                        return;
+                    }
+                    uni.showToast({
+                        title: '注册成功',
+                        success : function () {
+
+                        },
+                    });
+                },
+            };//end parames
+        },//end function register
+
+
 	},//end methods
 };
 </script>
