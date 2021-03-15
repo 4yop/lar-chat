@@ -10,8 +10,8 @@
 			<view class="header_left">
 				<image mode="aspectFill" :src="_user_info.headImg" />
 				<view class="header_left_content">
-					<view class="header_left_content_name">{{_user_info.userName}}</view>
-					<view class="header_left_content_number">微信号: {{_user_info.wechatNumber}}</view>
+					<view class="header_left_content_name">{{userInfo.name}}</view>
+					<view class="header_left_content_number">邮箱: {{userInfo.email}}</view>
 				</view>
 			</view>
 			<view class="header_right">
@@ -39,9 +39,15 @@
 </template>
 
 <script>
+import {http_request} from "../../utils/http_request";
+
 export default {
 	data() {
 		return {
+		    userInfo : {
+                name : '',
+                email : '',
+            },
 			groupList: [
 				{ title: '收藏', color: '#409eff', icon: 'star' },
 				{ title: '相册', color: '#409eff', icon: 'photo' },
@@ -50,7 +56,49 @@ export default {
 			],
 		};
 	},
-	methods: {}
+    onLoad(options){
+        console.log(options);
+
+        if (!uni.getStorageSync('_token'))
+        {
+
+        }
+
+        this.userInfo = uni.getStorageSync('userInfo');
+        this.getUserInfo();
+    },
+    onShow() {
+
+    },//end onShow
+	methods: {
+
+        getUserInfo () {
+            let that = this;
+            let params = {
+                url : 'user',
+                sCallback : function (res) {
+                    if (res.code != 1) {
+                        uni.removeStorageSync('_token');
+                        uni.showToast({
+                            title: res.msg ? res.msg : 'error',
+                            icon : 'none',
+                            success : function (){
+                                setTimeout(function () {
+                                    uni.redirectTo({
+                                        url : '/pages/my/login',
+                                    });
+                                },1000);
+                            }
+                        });
+                        return;
+                    }//end if res.code
+                    that.userInfo = res.data;
+                    uni.setStorageSync('userInfo',res.data);
+                },//end sCallback
+            };//end params
+            http_request(params);
+        },//end getUserInfo
+    },//end methods
 };
 </script>
 

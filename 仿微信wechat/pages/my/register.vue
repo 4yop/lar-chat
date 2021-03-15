@@ -18,13 +18,13 @@
 				</view>
 				<view v-if="isSendEmail==true">
 					<view class="uni-form-item uni-column">
-						<input class="uni-input input" name="input" placeholder="邮箱验证码" />
+						<input class="uni-input input" name="input" v-model="code" placeholder="邮箱验证码" />
 					</view>
 					<view class="uni-form-item uni-column">
-						<input class="uni-input input" name="input" placeholder="密码" />
+						<input class="uni-input input" name="input" v-model="password" type="password" placeholder="密码" />
 					</view>
 					<view class="uni-form-item uni-column">
-						<input class="uni-input input" name="input" placeholder="确认密码" />
+						<input class="uni-input input" name="input" v-model="repassword" type="password" placeholder="确认密码" />
 					</view>
 
 					<view class="uni-form-item uni-column other">
@@ -35,10 +35,10 @@
 					</view>
 
 					<view class="uni-btn-v">
-						<button class='submit-button' form-type="submit">提交</button>
+						<button class='submit-button' @click="register" form-type="submit">提交</button>
 					</view>
 				</view>
-				<view class="uni-btn-v">
+				<view class="uni-btn-v" v-if="isSendEmail==false">
 					<button class='submit-button' @click="sendEmail" form-type="submit">发送验证码</button>
 				</view>
 			</form>
@@ -58,6 +58,9 @@ export default {
 	data() {
 		return {
 			email : '',
+			password : '',
+			repassword : '',
+			code : '',
 			isSendEmail : false,
 			inputEmailTips : [],
 			groupList: [
@@ -107,7 +110,7 @@ export default {
 
 		sendEmail () {
             let that = this;
-			if ( validator.isEmail(this.email) == false)
+			if ( validator.isEmail(that.email) == false)
 			{
 				uni.showToast({
 				    title: '邮件格式不正确',
@@ -140,8 +143,44 @@ export default {
 
         register () {
 		    let that = this;
+            //验证数据start
+            if ( validator.isEmail(this.email) == false)
+            {
+                uni.showToast({
+                    title: '邮件格式不正确',
+                    icon : 'none',
+                });
+                return;
+            }
+            if ( that.password == '' || that.repassword == '' )
+            {
+                uni.showToast({
+                    title: '密码和确认密码不能为空',
+                    icon : 'none',
+                });
+                return;
+            }
+            if ( that.password != that.repassword )
+            {
+                uni.showToast({
+                    title: '密码和确认密码不一致',
+                    icon : 'none',
+                });
+                return;
+            }
+            if ( that.code == '' )
+            {
+                uni.showToast({
+                    title: '邮箱验证码不能为空',
+                    icon : 'none',
+                });
+                return;
+            }
+            //验证数据end
+
+
             let params = {
-                url : 'register/code',
+                url : 'user/register',
                 data : {
                     email : that.email,
                     password : that.password,
@@ -160,11 +199,16 @@ export default {
                     uni.showToast({
                         title: '注册成功',
                         success : function () {
-
+                            setTimeout(function () {
+                                uni.navigateTo({
+                                    url : '/pages/my/login',
+                                });
+                            },2000);
                         },
                     });
                 },
             };//end parames
+            http_request(params);
         },//end function register
 
 
