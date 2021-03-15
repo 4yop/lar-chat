@@ -45,7 +45,12 @@ class UserController extends Controller
 
     public function show(User $user, Request $request)
     {
-        return success_json('ok',$request->user());
+        $data = [
+            'id' => $request->user()->id,
+            'name' => $request->user()->name,
+            'email' => $request->user()->email,
+        ];
+        return success_json('ok',$data);
     }
 
 }
