@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MailController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\AddressBookController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,5 +42,8 @@ Route::prefix('v1')
         // 登录后可以访问的接口
         Route::middleware('auth:api')->group(function() {
             Route::get('user', [UserController::class, 'show'])->name('user.show');
+            Route::post('logout', [UserController::class, 'logout'])->name('user.logout');
         });
+
+        Route::get('/user/list',[AddressBookController::class,'index'])->name('address_book.index');
     });

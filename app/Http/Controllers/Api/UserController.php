@@ -17,7 +17,7 @@ class UserController extends Controller
     public function register(UserRequest $request)
     {
         $res = User::insertGetId([
-                    'name' => rand(0,999),
+                    'name' => '随机名字',
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                 ]);
@@ -51,6 +51,13 @@ class UserController extends Controller
             'email' => $request->user()->email,
         ];
         return success_json('ok',$data);
+    }
+
+    public function logout()
+    {
+
+        auth('api')->logout();
+        return success_json('退出登录');
     }
 
 }
