@@ -4,9 +4,9 @@
 		<u-index-list :scrollTop="scrollTop" :index-list="indexList" :active-color="'#3CC51F'">
 			<view v-for="(item, index) in indexList" :key="index">
 				<u-index-anchor :index="item" />
-				<view v-for="user in firendList" :key="user.userId"  class="list-cell" @tap="linkToCard(user)" hover-class="message-hover-class">
-					<image mode="aspectFill" :src="user.headImg" />
-					<view  class="list-cell-name">{{user.userName}}</view>
+				<view v-for="user in firendList" :key="user.id"  class="list-cell" @tap="linkToCard(user)" hover-class="message-hover-class">
+					<image mode="aspectFill" :src="user.avatar" />
+					<view  class="list-cell-name">{{user.email}}</view>
 				</view>
 			</view>
 		</u-index-list>
@@ -15,21 +15,54 @@
 
 <script>
 	import searchInput from '@/components/searchInput/index.vue'
-export default {
+    import {http_request} from "../../utils/http_request";
+    import {getUserAvatar} from '../../utils/common';
+    export default {
 	components:{searchInput},
 	data() {
 		return {
 			scrollTop: 0,
-			indexList: ['☆', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+			indexList: ['☆',
+               // 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+            ],
+            firendList : [],
 		};
 	},
+
+    onLoad(options){
+        this.getAddressBookList();
+    },//end onLoad
+
+    onShow(){
+        this.getAddressBookList();
+    },//end onShow
+
 	methods: {
-		linkToCard({userId}){
+
+        getAddressBookList(){
+            let that = this;
+            let params = {
+                url : 'user/list',
+                type : 'GET',
+                sCallback : function (res){
+                    if (res.code == 1)
+                    {
+                        res.data.forEach((val,index,arr)=>{
+                            res.data[index].avatar = getUserAvatar(val.id);
+                        });
+                        that.firendList = res.data;
+                    }
+                },//end sCallback
+            };
+            http_request(params);
+        },
+
+		linkToCard(user){
 			this.$u.route({
 				url: 'pages/businessCard/businessCard',
-				params:{ userId }
+				params:user
 			})
-		}
+		},
 	},
 	onPageScroll(e) {
 		this.scrollTop = e.scrollTop;

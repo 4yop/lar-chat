@@ -33,7 +33,7 @@
 		}, {
 			"path": "pages/addressBook/addressBook",
 			"style": {
-				"navigationBarTitleText": "通讯录",
+				"navigationBarTitleText": "所有人",
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
@@ -240,7 +240,7 @@
 			"pagePath": "pages/addressBook/addressBook",
 			"iconPath": "static/image/address.png",
 			"selectedIconPath": "static/image/address_hl.png",
-			"text": "通讯录"
+			"text": "所有人"
 		}, {
 			"pagePath": "pages/find/find",
 			"iconPath": "static/image/find.png",
