@@ -4,7 +4,7 @@
 		<u-index-list :scrollTop="scrollTop" :index-list="indexList" :active-color="'#3CC51F'">
 			<view v-for="(item, index) in indexList" :key="index">
 				<u-index-anchor :index="item" />
-				<view v-for="user in firendList" :key="user.id"  class="list-cell" @tap="linkToCard(user)" hover-class="message-hover-class">
+				<view v-for="user in firendsList" :key="user.id"  class="list-cell" @tap="linkToCard(user)" hover-class="message-hover-class">
 					<image mode="aspectFill" :src="user.avatar" />
 					<view  class="list-cell-name">{{user.email}}</view>
 				</view>
@@ -17,6 +17,7 @@
 	import searchInput from '@/components/searchInput/index.vue'
     import {http_request} from "../../utils/http_request";
     import {getUserAvatar} from '../../utils/common';
+    import {ws_conn} from '../../utils/websocket';
     export default {
 	components:{searchInput},
 	data() {
@@ -25,7 +26,7 @@
 			indexList: ['☆',
                // 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
             ],
-            firendList : [],
+            firendsList : [],
 		};
 	},
 
@@ -35,9 +36,27 @@
 
     onShow(){
         this.getAddressBookList();
+		let ws = ws_conn();
+		ws.onmessage = this.onMessage;
+        
+		ws.onmessage = function (evt)
+		{
+			uni.showToast({
+			    title: '邮件格式不正确',
+			    icon : 'none',
+			});
+		    var msg = JSON.parse(evt.data);
+		    if (msg.type == 'init') {
+		        console.log(msg);
+		    }
+		};
     },//end onShow
 
 	methods: {
+
+		onMessage(msg) {
+			
+		},
 
         getAddressBookList(){
             let that = this;
@@ -50,7 +69,7 @@
                         res.data.forEach((val,index,arr)=>{
                             res.data[index].avatar = getUserAvatar(val.id);
                         });
-                        that.firendList = res.data;
+                        that.firendsList = res.data;
                     }
                 },//end sCallback
             };

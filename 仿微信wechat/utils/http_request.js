@@ -1,5 +1,5 @@
 import config from './config'
-
+import token from './token'
 
 const http_request = function (params, noRefetch) {
     var that = this,
@@ -20,11 +20,9 @@ const http_request = function (params, noRefetch) {
     if(params.setUpUrl==false){
         url = params.url;
     }
-    params.token = '';
-    let token = uni.getStorageSync('_token');
-    if (token) {
-        params.token = 'Bearer '+token;
-    }
+    params.token = token.getToken();
+    
+    
 
 
     uni.request({

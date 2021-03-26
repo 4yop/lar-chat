@@ -18,9 +18,9 @@
  * 然后观察一段时间workerman.log看是否有process_timeout异常
  */
 //declare(ticks=1);
-
-use \GatewayWorker\Lib\Gateway;
-
+namespace App\GatewayWorker;
+use GatewayWorker\Lib\Gateway;
+use Illuminate\Support\Facades\Log;
 /**
  * 主逻辑
  * 主要是处理 onConnect onMessage onClose 三个方法
@@ -28,38 +28,43 @@ use \GatewayWorker\Lib\Gateway;
  */
 class Events
 {
+    public static function onWebSocketConnect($client_id, $data)
+    {
+
+        $user_id = intval($data['get']['user_id']);
+        Gateway::bindUid($client_id,$user_id);
+    }
     /**
      * 当客户端连接时触发
      * 如果业务不需此回调可以删除onConnect
-     * 
+     *
      * @param int $client_id 连接id
      */
     public static function onConnect($client_id)
     {
-        // 向当前client_id发送数据 
-        Gateway::sendToClient($client_id, "Hello $client_id\r\n");
-        // 向所有人发送
-        Gateway::sendToAll("$client_id login\r\n");
+        // 向当前client_id发送数据
+        Gateway::sendToClient($client_id,ws_json('init','连接成功'));
     }
-    
-   /**
-    * 当客户端发来消息时触发
-    * @param int $client_id 连接id
-    * @param mixed $message 具体消息
-    */
-   public static function onMessage($client_id, $message)
-   {
-        // 向所有人发送 
-        Gateway::sendToAll("$client_id said $message\r\n");
-   }
-   
-   /**
-    * 当用户断开连接时触发
-    * @param int $client_id 连接id
-    */
-   public static function onClose($client_id)
-   {
-       // 向所有人发送 
-       GateWay::sendToAll("$client_id logout\r\n");
-   }
+
+    /**
+     * 当客户端发来消息时触发
+     * @param int $client_id 连接id
+     * @param mixed $message 具体消息
+     */
+    public static function onMessage($client_id, $message)
+    {
+
+        // 向所有人发送
+        Gateway::sendToAll(helper());
+    }
+
+    /**
+     * 当用户断开连接时触发
+     * @param int $client_id 连接id
+     */
+    public static function onClose($client_id)
+    {
+        Log::info('close connection' . $client_id);
+
+    }
 }
