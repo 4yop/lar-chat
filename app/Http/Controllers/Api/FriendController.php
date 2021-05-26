@@ -20,4 +20,12 @@ class FriendController
             'list' => $list,
         ]);
     }
+
+    public function detail(Request $request)
+    {
+        $user = $request->user();
+        $firend_id = $request->input('firend_id');
+        $list = UserFriend::with(['friend'])->where(['user_id'=>$user->id,'firend_id'=>$firend_id])->first();
+    }
+
 }

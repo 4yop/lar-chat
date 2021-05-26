@@ -46,7 +46,7 @@ Route::prefix('v1')
             Route::get('user', [UserController::class, 'show'])->name('user.show');
             Route::post('logout', [UserController::class, 'logout'])->name('user.logout');
 
-            Route::get('friend',[FriendController::class,'index'])->name('user.logout');
+            Route::get('friends',[FriendController::class,'index'])->name('user.logout');
 
         });
 
