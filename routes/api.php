@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MailController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AddressBookController;
+use App\Http\Controllers\Api\FriendController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,6 +45,9 @@ Route::prefix('v1')
         Route::middleware('auth:api')->group(function() {
             Route::get('user', [UserController::class, 'show'])->name('user.show');
             Route::post('logout', [UserController::class, 'logout'])->name('user.logout');
+
+            Route::get('friend',[FriendController::class,'index'])->name('user.logout');
+
         });
 
         Route::get('/user/list',[AddressBookController::class,'index'])->name('address_book.index');

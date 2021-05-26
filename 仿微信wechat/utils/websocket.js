@@ -1,9 +1,9 @@
 import token from './token'
 import config from './config'
 const ws_conn = function () {
-	let user_id = uni.getStorageSync('userInfo')['id'];
-	
-	let wsUrl = config.wsUrl+`?token=${token.getToken()}&user_id=${user_id}`;
+let user_id = uni.getStorageSync('userInfo')['id'];
+
+let wsUrl = config.wsUrl+`?token=${token.getToken()}`;
 	
 	
 	
@@ -17,7 +17,6 @@ uni.connectSocket({
     header: {
         'content-type': 'application/json'
     },
-    protocols: ['protocol1'],
     method: 'GET',
 	success : function () {
 		

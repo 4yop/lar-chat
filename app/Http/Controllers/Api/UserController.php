@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -38,6 +39,7 @@ class UserController extends Controller
         }
 //
 //        $a = Auth::guard('api')->getUser();
+        Cache::put("lar-chat:token:$token",$request->user,auth('api')->factory()->getTTL() * 60);
 
         return success_json('登录成功',[
             'token' => $token,

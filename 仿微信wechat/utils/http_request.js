@@ -33,7 +33,7 @@ const http_request = function (params, noRefetch) {
             'content-type': 'application/json',
             'Accept' : 'application/json',
             // 'token': 'token',
-            'Authorization' : params.token,
+            'Authorization' : "Bearer "+params.token,
         },
         success: function (res) {
             uni.hideToast();

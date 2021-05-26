@@ -8,6 +8,7 @@ use Workerman\Worker;
 use GatewayWorker\Gateway;
 use GatewayWorker\Register;
 
+
 class GatewayWorkerServer extends Command
 {
     /**

@@ -4,9 +4,9 @@
 		<u-index-list :scrollTop="scrollTop" :index-list="indexList" :active-color="'#3CC51F'">
 			<view v-for="(item, index) in indexList" :key="index">
 				<u-index-anchor :index="item" />
-				<view v-for="user in firendsList" :key="user.id"  class="list-cell" @tap="linkToCard(user)" hover-class="message-hover-class">
-					<image mode="aspectFill" :src="user.avatar" />
-					<view  class="list-cell-name">{{user.email}}</view>
+				<view v-for="item in firendsList" :key="item.friend.id"  class="list-cell" @tap="linkToCard(item.friend)" hover-class="message-hover-class">
+					<image mode="aspectFill" :src="item.friend.avatar" />
+					<view  class="list-cell-name">{{item.friend.email}}</view>
 				</view>
 			</view>
 		</u-index-list>
@@ -17,7 +17,9 @@
 	import searchInput from '@/components/searchInput/index.vue'
     import {http_request} from "../../utils/http_request";
     import {getUserAvatar} from '../../utils/common';
+    import { get_friends_list } from "../../utils/friend";
     import {ws_conn} from '../../utils/websocket';
+    import url from "../../utils/url";
     export default {
 	components:{searchInput},
 	data() {
@@ -31,49 +33,34 @@
 	},
 
     onLoad(options){
-        this.getAddressBookList();
+
+
     },//end onLoad
 
     onShow(){
-        this.getAddressBookList();
-		let ws = ws_conn();
-		ws.onmessage = this.onMessage;
-        
-		ws.onmessage = function (evt)
-		{
-			uni.showToast({
-			    title: '邮件格式不正确',
-			    icon : 'none',
-			});
-		    var msg = JSON.parse(evt.data);
-		    if (msg.type == 'init') {
-		        console.log(msg);
-		    }
-		};
+
+        this.getFriendsList();
     },//end onShow
 
 	methods: {
 
 		onMessage(msg) {
-			
+
 		},
 
-        getAddressBookList(){
-            let that = this;
-            let params = {
-                url : 'user/list',
-                type : 'GET',
-                sCallback : function (res){
-                    if (res.code == 1)
-                    {
-                        res.data.forEach((val,index,arr)=>{
-                            res.data[index].avatar = getUserAvatar(val.id);
-                        });
-                        that.firendsList = res.data;
-                    }
-                },//end sCallback
+        getFriendsList () {
+		    let that = this;
+            let parame = {
+                url : url.friendList,
+                sCallback : function (res) {
+                    that.firendsList = res.data.list;
+                },
             };
-            http_request(params);
+            http_request(parame);
+        },
+
+        getAddressBookList(){
+
         },
 
 		linkToCard(user){

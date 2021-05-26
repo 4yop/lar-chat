@@ -41,7 +41,7 @@
 <script>
 import {http_request} from "../../utils/http_request";
 import {getUserAvatar} from "../../utils/common";
-
+import {ws_conn} from "../../utils/websocket.js";
 export default {
 	data() {
 		return {
@@ -70,7 +70,7 @@ export default {
         this.getUserInfo();
     },
     onShow() {
-
+		let ws = ws_conn();
     },//end onShow
 	methods: {
 

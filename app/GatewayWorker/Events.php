@@ -22,6 +22,7 @@ namespace App\GatewayWorker;
 use GatewayWorker\Lib\Gateway;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 /**
  * 主逻辑
  * 主要是处理 onConnect onMessage onClose 三个方法
@@ -31,16 +32,19 @@ class Events
 {
     public static function onWebSocketConnect($client_id, $data)
     {
-        //token
-        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sYXItY2hhdC50ZXN0XC9hcGlcL3YxXC91c2VyXC9sb2dpbiIsImlhdCI6MTYyMjAxMTA2NSwiZXhwIjoxNjIyMDE0NjY1LCJuYmYiOjE2MjIwMTEwNjUsImp0aSI6IlFEU3U5MmJJR0VpQlZhMHYiLCJzdWIiOjIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.Tkmr2cpkXaSYfwrfa-dqa0NzvNT0jVFOC_E7S2qmt9k";
-        //验证
-        Auth::guard('api')->setToken($token)->authenticate();
-        //成功后获取用户
-        $user = Auth::guard('api')->getUser();
+        if (!isset($data['get']['token']) || empty($data['get']['token']))
+        {
+            Gateway::closeClient($client_id,"{'message':'token 空'}");
+            return;
+        }
 
+        $token = $data['get']['token'];
+        $user = Cache::get("lar-chat:token:$token");
         var_dump($user);
-        var_dump($user->id);
+
         Gateway::bindUid($client_id,$user->id);
+
+        Gateway::sendToClient($client_id,ws_json('init','id:'.$user->email));
     }
     /**
      * 当客户端连接时触发
@@ -50,8 +54,9 @@ class Events
      */
     public static function onConnect($client_id)
     {
+        $user_id = Gateway::getUidByClientId($client_id);
         // 向当前client_id发送数据
-        Gateway::sendToClient($client_id,ws_json('init','连接成功'));
+        Gateway::sendToClient($client_id,ws_json('init','连接成功'.$user_id));
     }
 
     /**

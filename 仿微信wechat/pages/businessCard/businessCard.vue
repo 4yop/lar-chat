@@ -11,7 +11,7 @@
 		</view>
 		<view  class="perch"></view>
 		<u-cell-group >
-			<u-cell-item title="个性签名" label="想做①嗰佷酷の亽，扭頭僦赱，比伱殘忍，比伱狠。" hover-class="none" :title-style="{ marginLeft: '10rpx' }"></u-cell-item>
+			<u-cell-item title="个性签名" :label="userInfo.description" hover-class="none" :title-style="{ marginLeft: '10rpx' }"></u-cell-item>
 <!--            <u-cell-item title="朋友圈" label="模拟数据暂不支持查看好友朋友圈" hover-class="none" :title-style="{ marginLeft: '10rpx' }"></u-cell-item>-->
 <!--			<u-cell-item title="更多信息" :title-style="{ marginLeft: '10rpx' }" @click="linkToMoreInfoMation"></u-cell-item>-->
 		</u-cell-group>
@@ -30,7 +30,12 @@
 	export default {
 		data() {
 			return {
-				userInfo:{},
+				userInfo:{
+                    name : '',
+                    email : '',
+                    description : '',
+                    avatar : '',
+                },
 				isItMe:false
 			}
 		},
@@ -38,7 +43,7 @@
 			linkToChat(){
 				this.$u.route({
 					url:"pages/chat/chat",
-					params:{ fromUserId:this.userInfo.userId }
+					params:{ fromUserId:this.userInfo.id }
 				})
 			},
 			previewImg(urls){
