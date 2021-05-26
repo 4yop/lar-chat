@@ -9,7 +9,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -36,15 +36,18 @@ class UserController extends Controller
         {
             throw new UserException('登录失败');
         }
+//
+//        $a = Auth::guard('api')->getUser();
 
         return success_json('登录成功',[
             'token' => $token,
-            'expires_in' => auth('api')->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
         ]);
     }
 
     public function show(User $user, Request $request)
     {
+
         $data = [
             'id' => $request->user()->id,
             'name' => $request->user()->name,

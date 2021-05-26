@@ -31,13 +31,16 @@ class Events
 {
     public static function onWebSocketConnect($client_id, $data)
     {
-
+        //token
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sYXItY2hhdC50ZXN0XC9hcGlcL3YxXC91c2VyXC9sb2dpbiIsImlhdCI6MTYyMjAxMTA2NSwiZXhwIjoxNjIyMDE0NjY1LCJuYmYiOjE2MjIwMTEwNjUsImp0aSI6IlFEU3U5MmJJR0VpQlZhMHYiLCJzdWIiOjIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.Tkmr2cpkXaSYfwrfa-dqa0NzvNT0jVFOC_E7S2qmt9k";
+        //验证
+        Auth::guard('api')->setToken($token)->authenticate();
+        //成功后获取用户
+        $user = Auth::guard('api')->getUser();
 
-        $user =  Auth::guard('api')->setToken($token)->authenticate();
-
-        $user_id = intval($data['get']['user_id']);
-        Gateway::bindUid($client_id,$user_id);
+        var_dump($user);
+        var_dump($user->id);
+        Gateway::bindUid($client_id,$user->id);
     }
     /**
      * 当客户端连接时触发
