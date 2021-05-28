@@ -4,6 +4,11 @@ const url = {
     wsUrl : 'ws://127.0.0.1:23460',
 
 	friendList : 'friends',
+    friend : 'friend',
+    chat : 'chat',
+    toFriend : 'send/friend',
+    chatList : 'chat/list',
+
 };
 
 export default url;

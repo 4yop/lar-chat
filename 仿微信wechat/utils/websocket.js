@@ -4,11 +4,11 @@ const ws_conn = function () {
 let user_id = uni.getStorageSync('userInfo')['id'];
 
 let wsUrl = config.wsUrl+`?token=${token.getToken()}`;
-	
-	
-	
-	
-	
+
+
+
+
+
 
 
 
@@ -19,13 +19,13 @@ uni.connectSocket({
     },
     method: 'GET',
 	success : function () {
-		
+
 	},
 	fail : function () {
-		
+
 	},
 	complete : function () {
-		
+
 	}
 });
 
@@ -37,9 +37,9 @@ uni.onSocketError(function (res) {
   console.log('WebSocket连接打开失败，请检查！');
 });
 
-uni.onSocketMessage(function (res) {
-  console.log('收到服务器内容：' + res.data);
-});
+// uni.onSocketMessage(function (res) {
+//   console.log('收到服务器内容：' + res.data);
+// });
 
 uni.onSocketClose(function (res) {
   console.log('WebSocket 已关闭！');
@@ -47,4 +47,11 @@ uni.onSocketClose(function (res) {
 
 }
 
-export {ws_conn}
+const notifyFriend = function (data) {
+    let json = JSON.stringify(data);
+    uni.sendSocketMessage({
+        data : json,
+    });
+}
+
+export {ws_conn,notifyFriend}

@@ -95,6 +95,7 @@
 		}, {
 			"path": "pages/chat/chat",
 			"style": {
+                "enablePullDownRefresh": true,
 				"app-plus": {
 					"softinputNavBar": "none",
 					"softinputMode": "adjustPan",
@@ -225,7 +226,7 @@
 				"navigationBarTitleText": "更多信息"
 			}
         }
-        
+
     ],
 	"tabBar": {
 		"color": "#7A7E83",

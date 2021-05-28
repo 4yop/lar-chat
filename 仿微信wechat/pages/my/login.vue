@@ -95,12 +95,18 @@ export default {
                         title: '登录成功',
                         success : function () {
                             console.log(res);
-                            uni.setStorageSync('_token',res.data.token);
-                            setTimeout(function () {
-                                uni.switchTab({
-                                    url : '/pages/my/my',
-                                });
-                            },100);
+
+                            uni.setStorage({
+                                key : '_token',
+                                data : res.data,
+                                success : function () {
+                                    setTimeout(function () {
+                                        uni.switchTab({
+                                            url : '/pages/my/my',
+                                        });
+                                    },1000);
+                                }
+                            });
                         },
                     });
                 },

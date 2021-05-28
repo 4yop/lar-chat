@@ -33,7 +33,7 @@ class UserController extends Controller
     public function login (UserRequest $request)
     {
 
-        if ( !$token = Auth::guard('api')->login($request->user) )
+        if ( !$token = Auth::guard('api')->setTTL(1000)->login($request->user) )
         {
             throw new UserException('登录失败');
         }
@@ -43,7 +43,7 @@ class UserController extends Controller
 
         return success_json('登录成功',[
             'token' => $token,
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
+            'expires_time' => time()+auth('api')->factory()->getTTL() * 60,
         ]);
     }
 

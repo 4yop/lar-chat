@@ -4,23 +4,27 @@
 		<u-navbar :is-back="false" title="微信" :background="{ background: '#f8f8f8'  }" title-color="#404133" :border-bottom="false" z-index="1001">
 			<view class="slot-wrap" slot="right">
 				<u-icon name="plus-circle" size="36" @click="showSelect"></u-icon>
-			</view>		
+			</view>
 		</u-navbar>
 		<!-- #endif -->
-		
+
 		<selectInput :list="selectList" :list-key="'name'" :show.sync="selectShow" @on-select="checkSelect" @close="closeSelect" />
 		<searchInput />
 		<u-swipe-action :show="item.show" :index="index" v-for="(item, index) in list" btn-width="160" :key="item.id" @click="click" @open="open" :options="options">
-			<view class="item" :class="item.isTop ? 'bg_view' : ''" hover-class="message-hover-class" @tap="linkTo(item)">
-				<image mode="aspectFill" :src="item.images" />
+			<view class="item"  hover-class="message-hover-class" @tap="linkTo(item)">
+                <span v-if="item.no_read>0" class="no-read">
+                    {{ item.no_read > 99 ? 99 : item.no_read }}
+                </span>
+				<image mode="aspectFill" :src="item.other_user.avatar" />
+
 				<!-- 此层wrap在此为必写的，否则可能会出现标题定位错误 -->
 				<view class="right u-border-bottom title-wrap">
 					<view class="right_top">
-						<view class="right_top_name u-line-1">{{ item.name }}</view>
-						<view class="right_top_time ">{{ item.updateTime }}</view>
+						<view class="right_top_name u-line-1">{{ item.other_user.name }}</view>
+						<view class="right_top_time ">{{ item.updated_at }}</view>
 					</view>
 					<view class="right_btm ">
-						<view class="u-line-1">-</view>
+						<view class="u-line-1">{{ item.last_content }}</view>
 						<view class=""></view>
 					</view>
 				</view>
@@ -32,37 +36,18 @@
 <script>
 import searchInput from '@/components/searchInput/index.vue';
 import selectInput from '@/components/selectInput/selectInput.vue';
+
+import url from "../../utils/url";
+import {http_request} from "../../utils/http_request";
+
+import {ws_conn,notifyFriend} from "../../utils/websocket";
+
 export default {
 	components: { searchInput, selectInput },
 	data() {
 		return {
-			list: [
-				{
-					id: 1,
-					userId:3,
-					name: '迪丽热巴',
-					images: require('@/static/image/girl.jpg'),
-					updateTime: '下午 5:10',
-					show: false,
-					isTop: true
-				},
-				{
-					id: 2,
-					userId:4,
-					name: '小贱贱',
-					images: require('@/static/image/boy.jpg'),
-					updateTime: '下午 5:10',
-					show: false
-				},
-				{
-					id: 3,
-					userId:2,
-					name: '陈冠希',
-					images: require('@/static/image/guanxi.jpg'),
-					updateTime: '下午 5:10',
-					show: false
-				}
-			],
+		    page : 1,
+			list: [],
 			selectShow: false,
 			options: [
 				{
@@ -85,7 +70,7 @@ export default {
 		click(index, index1) {
 			if (index1 == 0) {
 				this.list.splice(index, 1);
-			} 
+			}
 		},
 		//action 打开事件
 		open(index) {
@@ -101,10 +86,10 @@ export default {
 			}
 		},
 		//跳转
-		linkTo({ id, name, images ,userId }) {
+		linkTo(item) {
 			this.$u.route({
 				url: 'pages/chat/chat',
-				params: { messageId: id,fromUserId:userId}
+				params: { id: item.other_user.id}
 			});
 		},
 		//关闭弹窗
@@ -125,7 +110,56 @@ export default {
 				});
 			}
 		},
+        getChatList () {
+            let that = this;
+            let page = that.page;
+            let parame = {
+                url : `${url.chatList}`,
+                data : {
+                    page : page,
+                },
+                sCallback : function (res) {
+                    if (res.code == 1 && res.data) {
+                        that.page = page+1;
+                        if (page == 1) {
+                            that.list = res.data;
+                            uni.setStorageSync('chatList:page:1',res.data);
+                        }
+                    }
+                },
+            };
+            http_request(parame);
+        },
+        wsNotifyMessage() {
+		    let that = this;
+		    that.page = 1;
+		    that.getChatList();
+        },
 	},
+    onLoad() {
+        let that = this;
+        ws_conn();
+        that.list = uni.getStorageSync('chatList:page:1');
+
+        uni.onSocketMessage(function (res) {
+            let message = JSON.parse(res.data);
+            console.log(message);
+            if (!message || !message.event)
+            {
+                return;
+            }
+            if (message.event == 'user.message')
+            {
+                that.wsNotifyMessage();
+            }
+        });
+
+    },
+    onShow() {
+        let that = this;
+        that.getChatList();
+    }
+
 };
 </script>
 
@@ -142,7 +176,22 @@ export default {
 			margin: 20rpx;
 			border-radius: 12rpx;
 			flex: 0 0 76rpx;
-		}
+            position:relative;
+        }
+        .no-read{
+            position:absolute;
+            border-radius:50%;
+            min-width:40rpx;
+            line-height: 40rpx;
+            height:40rpx;
+            top:10rpx;
+            left:70rpx;
+            background-color:red;
+            color:white;
+            display: block;
+            text-align: center;
+            z-index: 99;
+        }
 		.right {
 			overflow: hidden;
 			flex: 1 0;
@@ -177,7 +226,7 @@ export default {
 	.slot-wrap {
 		display: flex;
 		align-items: center;
-		padding: 0 30rpx; 
+		padding: 0 30rpx;
 	}
 }
 </style>

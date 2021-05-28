@@ -4,43 +4,44 @@
 			<!-- 背景图- 定位方式 -->
 			<image class="content-box-bg" :src="_user_info.chatBgImg" :style="{ height: imgHeight }"></image>
 			<view class="content-box-loading" v-if="!loading"><u-loading mode="flower"></u-loading></view>
-			<view class="message" v-for="(item, index) in messageList" :key="index" :id="`msg-${item.hasBeenSentId}`">
-				<view class="message-item " :class="item.isItMe ? 'right' : 'left'">
-					<image class="img" :src="item.fromUserHeadImg" mode="" @tap="linkToBusinessCard(item.fromUserId)"></image>
+
+			<view class="message" v-for="(item, index) in chatData" :key="index" :id="`msg-${item.id}`">
+				<view class="message-item " :class="item.from_id == userInfo.id ? 'right' : 'left'">
+					<image class="img" :src="item.from_user.avatar" mode="" @tap="linkToBusinessCard(item.from_id)"></image>
 					<!-- contentType = 1 文本 -->
-					<view class="content" v-if="item.contentType == 1">{{ item.content }}</view>
+					<view class="content" v-if="item.type == 0">{{ item.content }}</view>
 					<!-- contentType = 2 语音 -->
-					<view
-						class="content contentType2"
-						:class="[{ 'content-type-right': item.isItMe }]"
-						v-if="item.contentType == 2"
-						@tap="handleAudio(item)"
-						hover-class="contentType2-hover-class"
-						:style="{width:`${130+(item.contentDuration*2)}rpx`}"
-					>
-						<view
-							class="voice_icon"
-							:class="[
-								{ voice_icon_right: item.isItMe },
-								{ voice_icon_left: !item.isItMe },
-								{ voice_icon_right_an: item.anmitionPlay && item.isItMe },
-								{ voice_icon_left_an: item.anmitionPlay && !item.isItMe }
-							]"
-						></view>
-						<view class="">{{ item.contentDuration }}''</view>
-					</view>
+<!--					<view-->
+<!--						class="content contentType2"-->
+<!--						:class="[{ 'content-type-right': item.isItMe }]"-->
+<!--						v-if="item.contentType == 2"-->
+<!--						@tap="handleAudio(item)"-->
+<!--						hover-class="contentType2-hover-class"-->
+<!--						:style="{width:`${130+(item.contentDuration*2)}rpx`}"-->
+<!--					>-->
+<!--						<view-->
+<!--							class="voice_icon"-->
+<!--							:class="[-->
+<!--								{ voice_icon_right: item.isItMe },-->
+<!--								{ voice_icon_left: !item.isItMe },-->
+<!--								{ voice_icon_right_an: item.anmitionPlay && item.isItMe },-->
+<!--								{ voice_icon_left_an: item.anmitionPlay && !item.isItMe }-->
+<!--							]"-->
+<!--						></view>-->
+<!--						<view class="">{{ item.contentDuration }}''</view>-->
+<!--					</view>-->
 					<!-- contentType = 3 图片 -->
-					<view 
-						class="content contentType3" 	
-						v-if="item.contentType == 3"
-						@tap="viewImg([item.content])"
-					>
-						<image :src="item.content" class="img" mode="widthFix"></image>
-					</view>
+<!--					<view-->
+<!--						class="content contentType3"-->
+<!--						v-if="item.contentType == 3"-->
+<!--						@tap="viewImg([item.content])"-->
+<!--					>-->
+<!--						<image :src="item.content" class="img" mode="widthFix"></image>-->
+<!--					</view>-->
 				</view>
-			</view> 
+			</view>
 		</view>
-		
+
 		<!-- 底部聊天输入框 -->
 		<view class="input-box" :class="{ 'input-box-mpInputMargin': mpInputMargin }">
 			<view class="input-box-flex">
@@ -48,12 +49,13 @@
 				<image v-if="chatType === 'voice'" class="icon_img" :src="require('@/static/voice.png')"  @click="switchChatType('keyboard')"></image>
 				<image v-if="chatType === 'keyboard'" class="icon_img" :src="require('@/static/keyboard.png')"  @click="switchChatType('voice')"></image>
 				<!-- #endif -->
-				<view class="input-box-flex-grow"> 
+				<view class="input-box-flex-grow">
 					<input
 						v-if="chatType === 'voice'"
 						type="text"
 						class="content"
 						id="input"
+                        maxlength="200"
 						v-model="formData.content"
 						:hold-keyboard="true"
 						:confirm-type="'send'"
@@ -74,15 +76,15 @@
 						{{ voiceTitle }}
 					</view>
 				</view>
-				
+
 				<!-- 功能性按钮 -->
-				<image class=" icon_btn_add" :src="require('@/static/add.png')" @tap="switchFun"></image>
-				
-				<!-- #ifdef H5 --> 
-				<button class="btn" type="primary" size="mini" @touchend.prevent="sendMsg(null)">发送</button>
+<!--				<image class=" icon_btn_add" :src="require('@/static/add.png')" @tap="switchFun"></image>-->
+
+				<!-- #ifdef H5 -->
+				<button class="btn" type="primary" size="mini" @touchend.prevent="sendToFriend()">发送</button>
 				<!-- #endif -->
 			</view>
-			
+
 			<view class="fun-box" :class="{'show-fun-box':showFunBtn}">
 				<u-grid :col="4"  hover-class="contentType2-hover-class" :border="false" @click="clickGrid">
 					<u-grid-item v-for="(item, index) in funList" :index="index" :key="index" bg-color="#eaeaea">
@@ -93,7 +95,7 @@
 			</view>
 
 		</view>
-		
+
 		<!-- //语音动画 -->
 		<view class="voice_an"  v-if="recording">
 			<view class="voice_an_icon">
@@ -111,6 +113,9 @@
 </template>
 
 <script>
+import url from "../../utils/url";
+import {http_request} from "../../utils/http_request";
+import {ws_conn,notifyFriend} from "../../utils/websocket";
 export default {
 	data() {
 		return {
@@ -120,6 +125,18 @@ export default {
 				limit: 15,
 				index: 1
 			},
+
+            friendInfo : {
+                name : '',
+                email : '',
+                description : '',
+                avatar : '',
+            },
+            chatData : [],
+            userInfo : {},
+            page : 1,//聊天记录的页码,
+            isLoad : false,
+
 			messageList: [],
 			loading: true, //标识是否正在获取数据
 			imgHeight: '1000px',
@@ -268,22 +285,22 @@ export default {
 						},150)
 					}
 				// #endif
-					
+
 				// #ifndef MP-WEIXIN
 					uni.pageScrollTo({
 						scrollTop: 99999,
 						duration: 100
 					});
 				// #endif
-				
+
 				if(this.showFunBtn){
 					this.showFunBtn = false;
 				}
-				
-				// #ifdef MP-WEIXIN 
+
+				// #ifdef MP-WEIXIN
 				if (params.contentType == 1) {
 					this.mpInputMargin = true;
-				} 
+				}
 				// #endif
 				//h5浏览器并没有很好的办法控制键盘一直处于唤起状态 而且会有样式性的问题
 				// #ifdef H5
@@ -368,10 +385,10 @@ export default {
 					this.recording = false;
 				},200)
 				return;
-			} 
+			}
 			contentDuration = duration/1000;
 			// #endif
-			
+
 			// #ifdef APP-PLUS
 			contentDuration = this.voiceTime +1;
 			this.voiceTime = 0;
@@ -383,7 +400,7 @@ export default {
 				return;
 			};
 			// #endif
-			
+
 			this.recording = false;
 			const params = {
 				contentType: 2,
@@ -428,8 +445,8 @@ export default {
 		chooseImage(sourceType){
 			uni.chooseImage({
 				sourceType,
-				sizeType:['compressed'], 
-				success:res=>{ 
+				sizeType:['compressed'],
+				success:res=>{
 					this.showFunBtn = false;
 					for(let i = 0;i<res.tempFilePaths.length;i++){
 						const params = {
@@ -450,11 +467,162 @@ export default {
 				// #endif
 			});
 		},
-	},
-	onPageScroll(e) {
-		if (e.scrollTop < 50) {
-			this.joinData();
-		}
+
+        //获取好友信息
+        getFriendById () {
+            let that = this;
+            let friend_id = that.friendInfo.id;
+            let parame = {
+                url : `${url.friend}/${friend_id}`,
+                sCallback : function (res) {
+                    if (res.code == 1 && res.data) {
+                        that.friendInfo = res.data;
+                        uni.setNavigationBarTitle({
+                            title: that.friendInfo.name
+                        });
+                    }
+                },
+            };
+            http_request(parame);
+        },
+
+        //获取和该好友的聊天记录
+        getChatById () {
+            let that = this;
+            if (that.isLoad == true)
+            {
+                return;
+            }
+
+            let friend_id = that.friendInfo.id;
+            let page = that.page;
+            let parame = {
+                url : `${url.chat}/${friend_id}`,
+                data : {
+                    page : page,
+                },
+                noToast : true,
+                sCallback : function (res) {
+                    if (res.code == 1 && res.data && res.data.length > 0) {
+                       that.page = page + 1;
+                       that.isLoad = false;
+                       that.chatData = page == 1 ? res.data : res.data.concat(that.chatData);
+                       if (page == 1)
+                       {
+                           that.$nextTick(() => {
+                               that.formData.content = '';
+                               // #ifdef MP-WEIXIN
+                               uni.pageScrollTo({
+                                   scrollTop: 99999,
+                                   duration: 0, //小程序如果有滚动效果 input的焦点也会随着页面滚动...
+                               });
+
+                                   // setTimeout(()=>{
+                                   //     uni.pageScrollTo({
+                                   //         scrollTop: 99999,
+                                   //         duration: 0, //小程序如果有滚动效果 input的焦点也会随着页面滚动...
+                                   //     });
+                                   // },150)
+
+                               // #endif
+
+                               // #ifndef MP-WEIXIN
+                               uni.pageScrollTo({
+                                   scrollTop: 99999,
+                                   duration: 100
+                               });
+                               // #endif
+
+
+                               // #endif
+                               //h5浏览器并没有很好的办法控制键盘一直处于唤起状态 而且会有样式性的问题
+                               // #ifdef H5
+                               uni.hideKeyboard();
+                               // #endif
+                           });
+                       }
+                    }
+                },
+            };
+            http_request(parame);
+        },
+
+
+
+        //发消息给好友
+        sendToFriend () {
+            let that = this;
+            let friend_id = that.friendInfo.id;
+
+            if (!that.$u.trim(that.formData.content)) {
+                //验证输入框书否为空字符传
+                return;
+            }
+
+
+            let params = {
+                url : url.toFriend,
+                data : {
+                    content : that.formData.content,
+                    friend_id : friend_id,
+                },
+                type : 'POST',
+                sCallback : function (res) {
+                    if (res.code != 1) {
+                        uni.showToast({
+                            title: res.msg ? res.msg : '发送失败',
+                            duration: 2000,
+                            icon : 'none',
+                        });
+                        return;
+                    }
+                    that.formData.content = '';
+                    that.page = 1;
+                    that.getChatById();
+                    notifyFriend(res.data);
+                },
+            };
+            http_request(params);
+        },
+
+        //ws 通知好友
+        wsSendToFriend() {
+            let data = JSON.stringify({
+                event : 'user.message',
+            });
+            uni.sendSocketMessage({
+                data : data,
+            });
+        },
+
+        //ws 通知有 消息发来了
+        wsNotifyMessage(from_id) {
+            console.log('wsNotifyMessage');
+            let that = this;
+            if (from_id != this.friendInfo.id)
+            {
+                return;
+            }
+            that.page = 1;
+            that.getChatById();
+        },
+
+
+    },
+
+
+    onPullDownRefresh(){
+        let that = this;
+
+        setTimeout(function () {
+            that.getChatById();
+            uni.stopPullDownRefresh();
+        }, 1000);
+    },
+    onReachBottom(e) {
+
+            // this.joinData();
+
 	},
 	onNavigationBarButtonTap({ index }) {
 		if (index == 0) {
@@ -477,9 +645,39 @@ export default {
 		});
 		return true;
 	},
-	onLoad(info) {
+
+
+
+	onLoad(option) {
+	    ws_conn();
 		// { messageId,fromUserName,fromUserHeadImg } = info
-		const userInfo = this.firendList.filter(item => item.userId == info.fromUserId)[0];
+        let that = this;
+
+        that.userInfo = uni.getStorageSync('userInfo')
+
+
+        that.friendInfo = option;
+        that.getFriendById();
+        that.getChatById();
+
+        console.log(that.userInfo);
+
+        uni.onSocketMessage(function (res) {
+            let message = JSON.parse(res.data);
+            console.log(message);
+            if (!message || !message.event)
+            {
+                return;
+            }
+            if (message.event == 'user.message')
+            {
+                that.wsNotifyMessage(message.from_id);
+            }
+        });
+
+
+        return;
+		const userInfo = this.firendList.filter(item => item.userId == option.fromUserId)[0];
 		this.fromUserInfo = {
 			fromUserName: userInfo.userName,
 			fromUserHeadImg: userInfo.headImg,
@@ -489,7 +687,7 @@ export default {
 
 		//录音开始事件
 		this.Recorder.onStart(e => {
-			
+
 			this.beginVoice();
 		});
 		//录音结束事件
@@ -508,7 +706,9 @@ export default {
 			this.closeAnmition();
 		});
 	},
+
 	onReady() {
+	    let that = this;
 		//自定义返回按钮 因为原生的返回按钮不可阻止默认事件
 		// #ifdef H5
 		const icon = document.getElementsByClassName('uni-page-head-btn')[0];
@@ -516,7 +716,7 @@ export default {
 		// #endif
 
 		uni.setNavigationBarTitle({
-			title: this.fromUserInfo.fromUserName
+			title: that.friendInfo.name
 		});
 		this.joinData();
 		uni.getSystemInfo({
@@ -524,7 +724,7 @@ export default {
 				this.imgHeight = res.windowHeight + 'px';
 			}
 		});
-		
+
 		uni.onKeyboardHeightChange(res => {
 			if (res.height == 0) {
 				// #ifdef MP-WEIXIN
@@ -539,5 +739,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
- @import './index.scss'
+ @import './index.scss';
 </style>

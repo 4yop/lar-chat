@@ -19,6 +19,7 @@
  */
 //declare(ticks=1);
 namespace App\GatewayWorker;
+use App\GatewayWorker\Service\Message;
 use GatewayWorker\Lib\Gateway;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -40,9 +41,9 @@ class Events
 
         $token = $data['get']['token'];
         $user = Cache::get("lar-chat:token:$token");
-        var_dump($user);
+//        var_dump($user);
 
-        Gateway::bindUid($client_id,$user->id);
+        Gateway::bindUid($client_id,"user-{$user->id}");
 
         Gateway::sendToClient($client_id,ws_json('init','id:'.$user->email));
     }
@@ -66,8 +67,27 @@ class Events
      */
     public static function onMessage($client_id, $message)
     {
-        // 向所有人发送
-        Gateway::sendToAll(helper());
+        if ($message == '')
+        {
+            echo "消息空\n";
+            return;
+        }
+        if (!$messageArr = json_decode($message,true))
+        {
+            echo "消息不为JSON\n";
+            return;
+        }
+
+        if (!check_jiami($messageArr))
+        {
+            echo "halt 有误\n";
+            return;
+        }
+        if ($messageArr['event'] == 'user.message')
+        {
+            echo "user.message\n";
+            Message::notify($messageArr['from_id'],$messageArr['to_id']);
+        }
     }
 
     /**

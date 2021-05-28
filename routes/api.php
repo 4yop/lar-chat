@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\MailController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AddressBookController;
 use App\Http\Controllers\Api\FriendController;
+use App\Http\Controllers\Api\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,8 +47,15 @@ Route::prefix('v1')
             Route::get('user', [UserController::class, 'show'])->name('user.show');
             Route::post('logout', [UserController::class, 'logout'])->name('user.logout');
 
-            Route::get('friends',[FriendController::class,'index'])->name('user.logout');
+            Route::get('friends',[FriendController::class,'index'])->name('friend.index');
 
+            Route::get('friend/{friend_id}',[FriendController::class,'detail'])->where('friend_id', '[0-9]+')->name('friend.index');
+
+            Route::get('chat/{friend_id}',[ChatController::class,'index'])->where('friend_id', '[0-9]+')->name('chat.index');
+
+            Route::post('send/friend',[ChatController::class,'toUser'])->name('chat.send');
+
+            Route::get('chat/list',[ChatController::class,'chatList'])->name('chat.list');
         });
 
         Route::get('/user/list',[AddressBookController::class,'index'])->name('address_book.index');

@@ -27,7 +27,10 @@
 </template>
 
 <script>
-	export default {
+	import url from "../../utils/url";
+    import {http_request} from "../../utils/http_request";
+
+    export default {
 		data() {
 			return {
 				userInfo:{
@@ -41,9 +44,10 @@
 		},
 		methods: {
 			linkToChat(){
-				this.$u.route({
+			    let that = this;
+                that.$u.route({
 					url:"pages/chat/chat",
-					params:{ fromUserId:this.userInfo.id }
+					params: that.userInfo,
 				})
 			},
 			previewImg(urls){
@@ -54,15 +58,33 @@
 					url:"pages/moreInforMation/moreInforMation",
 					params:{ signature:this.userInfo.signature }
 				})
-			}
+			},
+			getFriendById (friend_id) {
+                let that = this;
+                let parame = {
+                    url : `${url.friend}/${friend_id}`,
+                    sCallback : function (res) {
+                        if (res.code == 1 && res.data) {
+                            that.userInfo = res.data;
+                        }
+                    },
+                };
+                http_request(parame);
+            }
+
+
 		},
 		onLoad( user ) {
 		    console.log(user);
+            let that = this;
 			if(user){
-				this.userInfo = user;
+                that.userInfo = user;
             }
+            that.getFriendById(user.id);
+        }
 
-		}
+
+
 	}
 </script>
 

@@ -21,11 +21,14 @@ class FriendController
         ]);
     }
 
-    public function detail(Request $request)
+    public function detail(int $friend_id,Request $request)
     {
         $user = $request->user();
-        $firend_id = $request->input('firend_id');
-        $list = UserFriend::with(['friend'])->where(['user_id'=>$user->id,'firend_id'=>$firend_id])->first();
+
+        $friend = UserFriend::with(['friend'])->where(['user_id'=>$user->id,'friend_id'=>$friend_id])->first();
+        return success_json('ok',$friend['friend']);
     }
+
+
 
 }

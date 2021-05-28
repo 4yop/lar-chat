@@ -1,7 +1,7 @@
 import config from './config'
 import token from './token'
 
-const http_request = function (params, noRefetch) {
+const http_request = function (params) {
     var that = this,
         url= config.restUrl + params.url;
     if(!params.type){
@@ -21,8 +21,8 @@ const http_request = function (params, noRefetch) {
         url = params.url;
     }
     params.token = token.getToken();
-    
-    
+
+
 
 
     uni.request({
