@@ -77,7 +77,7 @@ class ChatController extends Controller
     public function chatList(Request $request)
     {
         $user = $request->user();
-        $chat = ChatList::where(['user_id'=>$user->id])
+        $chat = ChatList::where(['user_id'=>$user->id,'is_show'=>1])
                         ->with(['otherUser'])
                         ->orderBy('updated_at','desc')
                         ->simplePaginate(20)
@@ -85,6 +85,18 @@ class ChatController extends Controller
 
 
         return success_json('发送成功',$chat['data']);
+    }
+
+    public function hideList(Request $request)
+    {
+        $user = $request->user();
+        $id = (int)$request->input('id',0);
+        if ($id < 1)
+        {
+            return error_json('操作失败');
+        }
+        ChatList::where(['user_id'=>$user->id,'id'=>$id,'is_show'=>1])->update(['is_show'=>0]);
+        return success_json('操作完成');
     }
 
 }

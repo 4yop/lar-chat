@@ -92,7 +92,20 @@
 					"animationDuration": 300
 				}
 			}
-		}, {
+		},
+        {
+            "path": "pages/search/newFriend",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationStyle": "custom",
+                "app-plus": {
+                    "titleView": false,
+                    "animationType": "zoom-out",
+                    "animationDuration": 300
+                }
+            }
+        },
+        {
 			"path": "pages/chat/chat",
 			"style": {
                 "enablePullDownRefresh": true,
@@ -157,8 +170,8 @@
 					}
 				}
 			}
-		}
-	    ,{
+		},
+        {
             "path" : "pages/businessCard/businessCard",
             "style" : {
 				"navigationBarTitleText": "",
@@ -168,8 +181,19 @@
 					}
 				}
 			}
-        }
-        ,{
+        },
+        {
+            "path" : "pages/businessCard/searchFriend",
+            "style" : {
+                "navigationBarTitleText": "",
+                "app-plus": {
+                    "titleNView": {
+                        "backgroundColor":"#FFFFFF"
+                    }
+                }
+            }
+        },
+        {
             "path" : "pages/releaseFirendCircle/releaseFirendCircle",
             "style" : {
 				"navigationBarTitleText": "",

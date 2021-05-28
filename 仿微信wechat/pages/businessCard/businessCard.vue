@@ -15,14 +15,22 @@
 <!--            <u-cell-item title="朋友圈" label="模拟数据暂不支持查看好友朋友圈" hover-class="none" :title-style="{ marginLeft: '10rpx' }"></u-cell-item>-->
 <!--			<u-cell-item title="更多信息" :title-style="{ marginLeft: '10rpx' }" @click="linkToMoreInfoMation"></u-cell-item>-->
 		</u-cell-group>
-		<view class="" v-if="!isItMe">
+		<view class="" v-if="userInfo.is_friend==1" >
 			<view  class="perch"></view>
 			<u-cell-group >
 				<u-cell-item title="发消息" :arrow="false" :center="true" :title-style="{ marginLeft: '10rpx' }" @click="linkToChat">
 					<u-icon slot="icon" name="chat" color="#36648B" size="32"></u-icon>
 				</u-cell-item>
 			</u-cell-group>
-		</view>
+        </view>
+        <view class="" v-if="userInfo.is_friend==0" >
+            <view  class="perch"></view>
+            <u-cell-group >
+                <u-cell-item title="添加好友" :arrow="false" :center="true" :title-style="{ marginLeft: '10rpx' }" @click="linkToChat">
+                    <u-icon slot="icon" name="chat" color="#36648B" size="32"></u-icon>
+                </u-cell-item>
+            </u-cell-group>
+        </view>
 	</view>
 </template>
 

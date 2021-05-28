@@ -44,7 +44,14 @@ export default {
 	},
 	methods: {
 		onSelectorClick(index) {
-			setTimeout(()=>{
+		    let that = this;
+            setTimeout(()=>{
+                if (that.list[index].page)
+                {
+                    that.$u.route({
+                        url:that.list[index].page,
+                    })
+                }
 				this.$emit('on-select',index)
 				this.clickMask();
 			},80)

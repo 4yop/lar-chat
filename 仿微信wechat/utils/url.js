@@ -5,9 +5,12 @@ const url = {
 
 	friendList : 'friends',
     friend : 'friend',
+    friendSearch : 'friend/search',
     chat : 'chat',
     toFriend : 'send/friend',
     chatList : 'chat/list',
+    chatHide : 'chat/hide',
+
 
 };
 

@@ -58,7 +58,11 @@ export default {
 					}
 				}
 			],
-			selectList: [{ id: '1', name: '添加朋友', icon: 'man-add-fill' }, { id: '2', name: '扫一扫', icon: 'scan' }, { id: '3', name: '收付款', icon: 'fingerprint' }]
+			selectList: [
+			    { id: '1', name: '添加朋友', icon: 'man-add-fill',page : '/pages/search/newFriend', },
+                // { id: '2', name: '扫一扫', icon: 'scan' },
+                // { id: '3', name: '收付款', icon: 'fingerprint' }
+            ]
 		};
 	},
 	methods: {
@@ -69,8 +73,13 @@ export default {
 		//action 点击事件
 		click(index, index1) {
 			if (index1 == 0) {
-				this.list.splice(index, 1);
-			}
+			    let that = this;
+
+			    console.log(that.list[index]);
+                that.delById(that.list[index].id);
+                that.list.splice(index, 1);
+
+            }
 		},
 		//action 打开事件
 		open(index) {
@@ -118,8 +127,9 @@ export default {
                 data : {
                     page : page,
                 },
+                noToast : true,
                 sCallback : function (res) {
-                    if (res.code == 1 && res.data) {
+                    if (res.code == 1 && res.data && res.data.length > 0) {
                         that.page = page+1;
                         if (page == 1) {
                             that.list = res.data;
@@ -130,6 +140,20 @@ export default {
             };
             http_request(parame);
         },
+
+        delById (id) {
+            let that = this;
+            let page = that.page;
+            let parame = {
+                url : `${url.chatHide}`,
+                data : {
+                    id : id
+                },
+                type : 'POST',
+            };
+            http_request(parame);
+        },
+
         wsNotifyMessage() {
 		    let that = this;
 		    that.page = 1;
@@ -140,6 +164,11 @@ export default {
         let that = this;
         ws_conn();
         that.list = uni.getStorageSync('chatList:page:1');
+
+        if (!that.list || that.list.length < 1)
+        {
+            that.page = 1;
+        }
 
         uni.onSocketMessage(function (res) {
             let message = JSON.parse(res.data);

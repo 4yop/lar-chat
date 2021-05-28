@@ -49,6 +49,8 @@ Route::prefix('v1')
 
             Route::get('friends',[FriendController::class,'index'])->name('friend.index');
 
+            Route::get('friend/search',[FriendController::class,'getByEmail'])->name('friend.search');
+
             Route::get('friend/{friend_id}',[FriendController::class,'detail'])->where('friend_id', '[0-9]+')->name('friend.index');
 
             Route::get('chat/{friend_id}',[ChatController::class,'index'])->where('friend_id', '[0-9]+')->name('chat.index');
@@ -56,6 +58,10 @@ Route::prefix('v1')
             Route::post('send/friend',[ChatController::class,'toUser'])->name('chat.send');
 
             Route::get('chat/list',[ChatController::class,'chatList'])->name('chat.list');
+
+            Route::post('chat/hide',[ChatController::class,'hideList'])->name('chat.hide');
+
+
         });
 
         Route::get('/user/list',[AddressBookController::class,'index'])->name('address_book.index');

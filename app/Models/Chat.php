@@ -45,6 +45,7 @@ class Chat extends Model
             $chatList1->last_content = $chat->content;
             $chatList1->user_id = $chat->from_id;
             $chatList1->other_id = $chat->to_id;
+            $chatList1->is_show = 1;
 //            $chatList1->no_read = isset($chatList1->no_read)?$chatList1->no_read+1:1;
             $chatList1->save();
 
@@ -60,6 +61,7 @@ class Chat extends Model
             $chatList2->user_id = $chat->to_id;
             $chatList2->other_id = $chat->from_id;
             $chatList2->no_read = isset($chatList1->no_read)?$chatList1->no_read+1:1;
+            $chatList2->is_show = 1;
             $chatList2->save();
         });
     }
