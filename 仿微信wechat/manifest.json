@@ -83,6 +83,14 @@
             "treeShaking" : {
                 "enable" : true
             }
+        },
+        "domain" : "http://chat.4yop.com",
+        "title" : "聊天",
+        "router" : {
+            "base" : "./"
+        },
+        "devServer" : {
+            "https" : true
         }
     }
 }
