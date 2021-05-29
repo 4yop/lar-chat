@@ -1,9 +1,9 @@
 import token from './token'
-import config from './config'
+import url from './url'
 const ws_conn = function () {
 let user_id = uni.getStorageSync('userInfo')['id'];
 
-let wsUrl = config.wsUrl+`?token=${token.getToken()}`;
+let wsUrl = url.wsUrl+`?token=${token.getToken()}`;
 
 
 

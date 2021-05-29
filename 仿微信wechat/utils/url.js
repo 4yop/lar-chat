@@ -1,7 +1,7 @@
 
 const url = {
 	restUrl : 'http://chat.4yop.com/api/v1/',
-    wsUrl : 'ws://115.159.197.138:23460',
+    wsUrl : 'ws://chat.4yop.com/ws/',
 
 	friendList : 'friends',
     friend : 'friend',

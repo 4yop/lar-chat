@@ -1,9 +1,9 @@
-import config from './config'
+import url from './url'
 import token from './token'
 
 const http_request = function (params) {
     var that = this,
-        url= config.restUrl + params.url;
+        request_url= url.restUrl + params.url;
     if(!params.type){
         params.type='get';
     }
@@ -18,7 +18,7 @@ const http_request = function (params) {
 
     /*不需要再次组装地址,可能是第三方的地址*/
     if(params.setUpUrl==false){
-        url = params.url;
+        request_url = params.url;
     }
     params.token = token.getToken();
 
@@ -26,7 +26,7 @@ const http_request = function (params) {
 
 
     uni.request({
-        url: url,//请求地址
+        url: request_url,//请求地址
         data: params.data,//请求数据
         method:params.type,//请求方法 GET POST 等
         header: {
