@@ -286,7 +286,7 @@ export default {
 					}
 				// #endif
 
-				// #ifndef MP-WEIXIN
+				// #ifdef MP-WEIXIN
 					uni.pageScrollTo({
 						scrollTop: 99999,
 						duration: 100
@@ -516,7 +516,7 @@ export default {
                                    scrollTop: 99999,
                                    duration: 0, //小程序如果有滚动效果 input的焦点也会随着页面滚动...
                                });
-
+								// #endif
                                    // setTimeout(()=>{
                                    //     uni.pageScrollTo({
                                    //         scrollTop: 99999,
@@ -524,7 +524,7 @@ export default {
                                    //     });
                                    // },150)
 
-                               // #endif
+                               
 
                                // #ifndef MP-WEIXIN
                                uni.pageScrollTo({
