@@ -36,7 +36,6 @@ class GatewayWorkerServer extends Command
     /**
      * Execute the console command.
      *
-     * [@return](https://learnku.com/users/31554) mixed
      */
     public function handle()
     {
