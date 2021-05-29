@@ -37,9 +37,6 @@ const http_request = function (params) {
         },
         success: function (res) {
             uni.hideToast();
-            // 判断以2（2xx)开头的状态码为正确
-            // 异常不要返回到回调中，就在request中处理，记录日志并showToast一个统一的错误即可
-
             params.sCallback && params.sCallback(res.data);
 
 
@@ -50,7 +47,25 @@ const http_request = function (params) {
 
             console.log(err);
             params.eCallback && params.eCallback(res.data);
-        }
+        },
+		complete: (complete) => {
+            //状态码为401 则是token过期或没有token
+            if (complete.statusCode == 401)
+			{
+                uni.removeStorageSync('_token');
+                uni.showToast({
+                    title: '未登陆',
+                    icon : 'none',
+                    success : function (){
+                        setTimeout(function () {
+                            uni.redirectTo({
+                                url : '/pages/my/login',
+                            });
+                        },1000);
+                    }
+                });
+			}
+        },
     });
 }
 

@@ -26,8 +26,8 @@
         <view class="" v-if="userInfo.is_friend==0" >
             <view  class="perch"></view>
             <u-cell-group >
-                <u-cell-item title="添加好友" :arrow="false" :center="true" :title-style="{ marginLeft: '10rpx' }" @click="linkToChat">
-                    <u-icon slot="icon" name="chat" color="#36648B" size="32"></u-icon>
+                <u-cell-item title="添加好友" :arrow="false" :center="true" :title-style="{ marginLeft: '10rpx',textAlign:'center', }" @click="addFriendById(userInfo.id)">
+                    <u-icon slot="icon" name="plus" color="#36648B" size="32"></u-icon>
                 </u-cell-item>
             </u-cell-group>
         </view>
@@ -78,10 +78,33 @@
                     },
                 };
                 http_request(parame);
-            }
+            },
 
+            addFriendById (friend_id) {
+                let that = this;
+                let parame = {
+                    url : url.friendAdd,
+                    data : {
+                        friend_id : friend_id,
+                    },
+                    type : "POST",
+                    sCallback : function (res) {
+                        uni.showToast({
+                            title: res.msg?res.msg:'添加失败',
+                            duration: 2000,
+                            icon : res.code == 1 ? 'success' : 'none',
+                            success : function () {
+                                if (res.code == 1 ) {
+                                    that.linkToChat();
+                                }//endif
+                            },//end success
+                        });//end uni.showToast
+                    },//end sCallback
+                };//end parame
+                http_request(parame);
+            },//end addFriendById()
 
-		},
+		},//end methods{}
 		onLoad( user ) {
 		    console.log(user);
             let that = this;

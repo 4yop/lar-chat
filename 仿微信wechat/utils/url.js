@@ -6,6 +6,7 @@ const url = {
 	friendList : 'friends',
     friend : 'friend',
     friendSearch : 'friend/search',
+    friendAdd : 'friend/add',
     chat : 'chat',
     toFriend : 'send/friend',
     chatList : 'chat/list',

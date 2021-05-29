@@ -53,6 +53,9 @@ Route::prefix('v1')
 
             Route::get('friend/{friend_id}',[FriendController::class,'detail'])->where('friend_id', '[0-9]+')->name('friend.index');
 
+            Route::post('friend/add',[FriendController::class,'add'])->name('friend.add');
+
+
             Route::get('chat/{friend_id}',[ChatController::class,'index'])->where('friend_id', '[0-9]+')->name('chat.index');
 
             Route::post('send/friend',[ChatController::class,'toUser'])->name('chat.send');

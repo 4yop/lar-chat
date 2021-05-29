@@ -16,9 +16,7 @@
 <script>
 	import searchInput from '@/components/searchInput/index.vue'
     import {http_request} from "../../utils/http_request";
-    import {getUserAvatar} from '../../utils/common';
-    import { get_friends_list } from "../../utils/friend";
-    import {ws_conn} from '../../utils/websocket';
+
     import url from "../../utils/url";
     export default {
 	components:{searchInput},
@@ -52,6 +50,7 @@
 		    let that = this;
             let parame = {
                 url : url.friendList,
+                noToast : true,
                 sCallback : function (res) {
                     that.firendsList = res.data.list;
                 },

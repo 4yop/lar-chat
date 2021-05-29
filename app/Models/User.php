@@ -50,4 +50,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function getAvatarAttribute($value)
+    {
+        return empty($value) ? '/static/img/guanxi.d2e10cb3.jpg' : $value;
+    }
+
 }

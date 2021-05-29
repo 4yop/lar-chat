@@ -45,7 +45,7 @@ class Events
 
         Gateway::bindUid($client_id,"user-{$user->id}");
 
-        Gateway::sendToClient($client_id,ws_json('init','id:'.$user->email));
+
     }
     /**
      * 当客户端连接时触发

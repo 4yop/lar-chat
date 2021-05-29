@@ -36,11 +36,11 @@
 				"navigationBarTitleText": "所有人",
 				"app-plus": {
 					"titleNView": {
-						"buttons": [{
-							"fontSrc": "/static/iconfont/iconfont.ttf",
-							"float": "right",
-							"text": "\ue786"
-						}]
+//						"buttons": [{
+//							"fontSrc": "/static/iconfont/iconfont.ttf",
+//							"float": "right",
+//							"text": "\ue786"
+//						}]
 					}
 				}
 			}

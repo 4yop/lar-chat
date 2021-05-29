@@ -186,6 +186,7 @@ export default {
     },
     onShow() {
         let that = this;
+        that.page = 1;
         that.getChatList();
     }
 

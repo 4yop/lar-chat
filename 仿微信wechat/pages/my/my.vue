@@ -70,7 +70,7 @@ export default {
         this.getUserInfo();
     },
     onShow() {
-		let ws = ws_conn();
+        this.getUserInfo();
     },//end onShow
 	methods: {
 
@@ -95,6 +95,7 @@ export default {
             let that = this;
             let params = {
                 url : 'user',
+                noToast : true,
                 sCallback : function (res) {
                     if (res.code != 1) {
                         uni.removeStorageSync('_token');
