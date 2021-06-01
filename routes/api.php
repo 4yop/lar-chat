@@ -45,6 +45,9 @@ Route::prefix('v1')
         // 登录后可以访问的接口
         Route::middleware('auth:api')->group(function() {
             Route::get('user', [UserController::class, 'show'])->name('user.show');
+
+            Route::get('user/qr_code', [UserController::class, 'qrcode'])->name('user.qr_code');
+
             Route::post('logout', [UserController::class, 'logout'])->name('user.logout');
 
             Route::get('friends',[FriendController::class,'index'])->name('friend.index');

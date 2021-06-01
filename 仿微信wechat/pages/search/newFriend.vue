@@ -6,12 +6,13 @@
 				<u-search
 					:focus="true"
 					@custom="clickCancel"
-					placeholder="搜索..."
+					placeholder="输入用户邮箱"
 					shape="square"
 					:action-style="{ color: '#007aff' }"
 					action-text="取消"
 					:bg-color="'#ffffff'"
 					v-model="search_word"
+					@search="search"
 				></u-search>
 			</view>
 		</u-navbar>
@@ -31,6 +32,9 @@
 				v-model="search_word"
                 @search="search"
 			></u-search>
+			<view style="text-align: center;line-height: 50rpx;height:50rpx;padding-top: 10rpx;">
+				我的:{{userInfo.email}}<u-icon name="grid" @click="toQrCode()"  color="#2979ff" size="50"></u-icon>
+			</view>
 		</view>
 		<!-- #endif -->
 	</view>
@@ -44,14 +48,22 @@ import url from "../../utils/url";
 export default {
 	data() {
 		return {
-			search_word: ''
+			search_word: '',
+			userInfo : {},
 		};
 	},
-
+	mounted() {
+		this.userInfo =  uni.getStorageSync('userInfo');
+	},
 	methods: {
 		clickCancel() {
 			this.$u.route({
 				type: 'navigateBack'
+			});
+		},
+		toQrCode () {
+			this.$u.route({
+			    url: 'pages/my/qr_code',
 			});
 		},
 		search(){

@@ -13,6 +13,16 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
+use Illuminate\Support\Facades\URL;
+
 class UserController extends Controller
 {
 
@@ -55,6 +65,7 @@ class UserController extends Controller
             'id' => $request->user()->id,
             'name' => $request->user()->name,
             'email' => $request->user()->email,
+            'avatar' => $request->user()->avatar,
         ];
         return success_json('ok',$data);
     }
@@ -64,6 +75,31 @@ class UserController extends Controller
 
         auth('api')->logout();
         return success_json('退出登录');
+    }
+
+    public function qrcode(Request $request)
+    {
+        // Create QR code
+        $user = $request->user();
+        $data =  route("page")."#/pages/businessCard/businessCard?id=".$user->id;
+        $qrCode = QrCode::create($data)
+                        ->setEncoding(new Encoding('UTF-8'))
+                        ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+                        ->setSize(300)
+                        ->setMargin(10)
+                        ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
+                        ->setForegroundColor(new Color(0, 0, 0))
+                        ->setBackgroundColor(new Color(255, 255, 255));
+
+        $writer = new PngWriter();
+        $result = $writer->write($qrCode);
+        $full_name = "img/code/".md5($user->id).".png";
+        touch($full_name);
+        $result->saveToFile($full_name);
+        return success_json('ok',[
+            'qr_code'=> str_replace('https://','http://',url(null,[],null)->secureAsset($full_name)),
+        ]);
+
     }
 
 }

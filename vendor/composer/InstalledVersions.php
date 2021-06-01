@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'a2032229eaefd2bc3d244e55500f2e4add0d4ae6',
+    'reference' => 'b428ba012992c23c815fa2fc07ef85f98ffb0f58',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -43,6 +43,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '9cb795bf30988e8c96dd3c40623c48a877bc6714',
+    ),
+    'bacon/bacon-qr-code' => 
+    array (
+      'pretty_version' => '2.0.3',
+      'version' => '2.0.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '3e9d791b67d0a2912922b7b7c7312f4b37af41e4',
     ),
     'barryvdh/laravel-ide-helper' => 
     array (
@@ -150,6 +159,15 @@ private static $installed = array (
         0 => '*',
       ),
     ),
+    'dasprid/enum' => 
+    array (
+      'pretty_version' => '1.0.3',
+      'version' => '1.0.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '5abf82f213618696dda8e3bf6f64dd042d8542b2',
+    ),
     'davedevelopment/hamcrest-php' => 
     array (
       'replaced' => 
@@ -237,6 +255,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '0dbf5d78455d4d6a41d186da50adc1122ec066f4',
+    ),
+    'endroid/qr-code' => 
+    array (
+      'pretty_version' => '4.1.4',
+      'version' => '4.1.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'f38ff0d968788aef0ddefb957062024b4ea521e1',
     ),
     'facade/flare-client-php' => 
     array (
@@ -604,7 +631,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'a2032229eaefd2bc3d244e55500f2e4add0d4ae6',
+      'reference' => 'b428ba012992c23c815fa2fc07ef85f98ffb0f58',
     ),
     'laravel/sail' => 
     array (

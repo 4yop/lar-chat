@@ -15,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect('h5/index.html');
-});
+})->name('page');
 use App\Http\Controllers\Test;
 Route::get('/test/email',[Test::class,'sendEmail']);

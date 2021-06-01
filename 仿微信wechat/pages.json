@@ -62,6 +62,33 @@
 			}
 		},
 		{
+			"path": "pages/my/qr_code",
+			"style": {
+				"navigationBarTitleText": " ",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"softinputNavBar": "none",
+					"softinputMode": "adjustPan",
+					"titleNView": {
+						"autoBackButton":false,
+						"buttons": [{
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"float": "right",
+							"text": "\ue626"
+						}
+						, {
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"float": "left",
+							"text": "\ue6f2",
+							"color": "#303133",
+							"background": "rgba(255,255,255,0)"
+						}
+						]
+					}
+				}
+			}
+		},
+		{
 			"path": "pages/my/login",
 			"style": {
 				"navigationBarTitleText": " ",
